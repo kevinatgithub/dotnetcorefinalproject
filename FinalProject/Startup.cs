@@ -25,6 +25,8 @@ namespace FinalProject
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllers();
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,12 +35,20 @@ namespace FinalProject
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
             else
             {
                 app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
+
+            app.UseSerilogRequestLogging();
 
             app.UseSerilogRequestLogging();
 
