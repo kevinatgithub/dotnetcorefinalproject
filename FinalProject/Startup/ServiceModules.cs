@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using System;
+using Repositories;
+using Services;
 
 namespace FinalProject
 {
@@ -8,6 +9,10 @@ namespace FinalProject
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
+            builder.AddMappingProfiles();
+
+            builder.RegisterType<ItemRepository>().As<IItemRepository>();
+            builder.RegisterType<ItemService>().As<IItemService>();
         }
     }
 }
