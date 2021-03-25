@@ -59,5 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Items.sql" />
+    <Build Include="Orders.sql" />
   </ItemGroup>
 </Project>
