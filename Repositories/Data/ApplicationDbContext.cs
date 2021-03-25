@@ -11,6 +11,7 @@ namespace Repositories.Data
         }
 
         public DbSet<Item> Items { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -19,6 +20,7 @@ namespace Repositories.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
             builder.Entity<Item>().ToTable("Items");
+            builder.Entity<Order>().ToTable("Orders");
         }
     }
 }

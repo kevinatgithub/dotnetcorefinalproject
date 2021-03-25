@@ -3,7 +3,7 @@ using AutoMapper;
 
 namespace FinalProject
 {
-    public static class AutofacExtensions
+    public static class AutofacMappingProfileExtensions
     {
         public static void AddMappingProfiles(this ContainerBuilder builder)
         {

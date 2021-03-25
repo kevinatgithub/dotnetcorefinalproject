@@ -12,8 +12,13 @@ namespace FinalProject
             CreateMap<Item, ItemDTO>();
             CreateMap<ItemDTO, Item>();
 
-            CreateMap<ItemDTO, ItemModel>();
             CreateMap<ItemModel, ItemDTO>();
+
+            CreateMap<Order, OrderDTO>();
+            CreateMap<OrderDTO, Order>();
+
+            CreateMap<CreateOrderModel, OrderDTO>();
+            CreateMap<UpdateOrderModel, OrderDTO>();
         }
     }
 }

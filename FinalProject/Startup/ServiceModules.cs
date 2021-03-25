@@ -13,6 +13,8 @@ namespace FinalProject
 
             builder.RegisterType<ItemRepository>().As<IItemRepository>();
             builder.RegisterType<ItemService>().As<IItemService>();
+            builder.RegisterType<OrderRepository>().As<IOrderRepository>();
+            builder.RegisterType<OrderService>().As<IOrderService>();
         }
     }
 }

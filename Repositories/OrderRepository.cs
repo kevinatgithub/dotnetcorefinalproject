@@ -4,62 +4,62 @@ using Microsoft.Extensions.Logging;
 using Repositories.Data;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Repositories
 {
-    public class ItemRepository : IItemRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly ILogger<ItemRepository> _logger;
+        private readonly ILogger<OrderRepository> _logger;
 
-        public ItemRepository(ApplicationDbContext dbContext, ILogger<ItemRepository> logger)
+        public OrderRepository(ApplicationDbContext dbContext, ILogger<OrderRepository> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public async Task<Item> Delete(int id)
+        public async Task<Order> Delete(int id)
         {
-            var toDelete = await _dbContext.Items.FindAsync(id);
+            var toDelete = await _dbContext.Orders.FindAsync(id);
             if (toDelete != null)
-                _dbContext.Items.Remove(toDelete);
+                _dbContext.Orders.Remove(toDelete);
             await _dbContext.SaveChangesAsync();
             return toDelete;
         }
 
-        public async Task<Item> Get(int id)
+        public async Task<Order> Get(int id)
         {
-            var record = await _dbContext.Items.FindAsync(id);
+            var record = await _dbContext.Orders.FindAsync(id);
             if (record == null)
-                _logger.LogWarning("Item with ID = {itemId} not found!", id);
-
+                _logger.LogWarning("Order with ID = {id} not found!", id);
             return record;
         }
 
-        public async Task<IList<Item>> GetAll()
+        public async Task<IList<Order>> GetAll()
         {
-            return await _dbContext.Items.ToListAsync();
+            return await _dbContext.Orders.ToListAsync();
         }
 
-        public async Task<Item> Save(Item item)
+        public async Task<Order> Save(Order order)
         {
-            if (item == null)
+            if (order == null)
                 return null;
 
-            if (item.Id != null)
+            if (order.Id != null)
             {
-                var toUpdate = await Get((int)item.Id);
+                var toUpdate = await _dbContext.Orders.FindAsync(order.Id);
                 if (toUpdate == null)
                     return null;
 
                 var entry = _dbContext.Entry(toUpdate);
-                entry.CurrentValues.SetValues(item);
+                entry.CurrentValues.SetValues(order);
                 await _dbContext.SaveChangesAsync();
                 return entry.Entity;
             }
 
-            var record = _dbContext.Items.Add(item);
+            var record = _dbContext.Orders.Add(order);
             await _dbContext.SaveChangesAsync();
             
             return record.Entity;
