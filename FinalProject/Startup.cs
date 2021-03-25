@@ -1,12 +1,16 @@
 using Autofac;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Repositories.Data;
 using Serilog;
+using System.Text;
 
 namespace FinalProject
 {
@@ -24,6 +28,35 @@ namespace FinalProject
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
+
+            SecurityKey securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Jwt:Secret"]));
+            services.Configure<JwtOptions>(o => o.SecurityKey = securityKey);
+
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(o =>
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+                        IssuerSigningKey = securityKey
+                    };
+                });
+
+            services.AddAuthorization(options =>
+            {
+                //options.AddPolicy("CanEditItems", policy => policy.Requirements.Add(new IsItemOwnerRequirement()));
+            });
+
+            //services.AddScoped<IAuthorizationHandler, IsItemOwnerHandler>();
 
             services.AddControllers();
 
@@ -62,6 +95,8 @@ namespace FinalProject
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
