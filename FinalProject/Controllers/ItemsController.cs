@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinalProject.ApiModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Services;
@@ -10,6 +11,7 @@ namespace FinalProject.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class ItemsController : ControllerBase
     {
         private readonly IItemService _itemService;
