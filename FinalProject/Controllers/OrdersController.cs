@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinalProject.ApiModels;
+using FinalProject.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -87,13 +88,14 @@ namespace FinalProject.Controllers
         /// <summary>
         /// Endpoint for creating Order
         /// </summary>
-        /// <param name="createOrderModel">Contains the Item ID and Quantity</param>
+        /// <param name="createOrderModel">Contains the Item ID and Quantity, [ItemExistActionFilter]</param>
         /// <returns></returns>
         /// <response code="200">Order creatd succefully</response>
         /// <response code="404">Item with the specified ID was not found!</response>
         /// <response code="400">Invalid request payload</response>
         /// <response code="401">Request unauthorized</response>
         [HttpPost]
+        [ItemExistActionFilter]
         public async Task<IActionResult> Create([FromBody] CreateOrderModel createOrderModel)
         {
             var orderDTO = _mapper.Map<CreateOrderModel, OrderDTO>(createOrderModel);
@@ -109,7 +111,7 @@ namespace FinalProject.Controllers
         /// <summary>
         /// For updating an order record
         /// </summary>
-        /// <param name="orderId">The ID of the Order to be updated</param>
+        /// <param name="orderId">The ID of the Order to be updated, [ItemExistActionFilter]</param>
         /// <param name="updateModel">contains new Item ID or new Quantity or new Status of the order</param>
         /// <returns></returns>
         /// <response code="200">Order was succefully updated</response>
@@ -117,6 +119,7 @@ namespace FinalProject.Controllers
         /// <response code="404">Item with the specified ID was not found!</response>
         /// <response code="400">Invalid request payload</response>
         [HttpPut]
+        [ItemExistActionFilter]
         [Route("{orderId}")]
         public async Task<IActionResult> Update(int orderId, [FromBody] UpdateOrderModel updateModel)
         {

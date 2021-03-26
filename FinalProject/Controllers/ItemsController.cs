@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinalProject.ApiModels;
+using FinalProject.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -89,8 +90,8 @@ namespace FinalProject.Controllers
         /// <summary>
         /// For updating an existing item
         /// </summary>
-        /// <param name="itemId">The ID of the item to be updated</param>
-        /// <param name="updateItemModel"></param>
+        /// <param name="itemId">The ID of the item to be updated, [ItemExistActionFilter]</param>
+        /// <param name="updateItemModel">contains update for Item Name, Stocks, and Unit Price</param>
         /// <returns></returns>
         /// <response code="200">Item updated succesfully</response>
         /// <response code="400">Failed to update item</response>
@@ -98,6 +99,7 @@ namespace FinalProject.Controllers
         /// <response code="404">Item with the provided ID does not exist</response>
         [HttpPut]
         [Route("{itemId}")]
+        [ItemExistActionFilter]
         public async Task<IActionResult> Update(int itemId, [FromBody] ItemModel updateItemModel)
         {
             _logger.LogInformation("Updating Item with Item ID = {i} applying changes name = {n}, stocks = {s}, unit price = {p}", itemId, updateItemModel.Name, updateItemModel.Stocks, updateItemModel.UnitPrice);
@@ -118,12 +120,13 @@ namespace FinalProject.Controllers
         /// <summary>
         /// Delete an Item by ID
         /// </summary>
-        /// <param name="itemId">The ID of the Item to be deleted</param>
+        /// <param name="itemId">The ID of the Item to be deleted, [ItemExistActionFilter]</param>
         /// <returns></returns>
         /// <response code="200">Item have been deleted succefully</response>
         /// <response code="401">Request unauthorized</response>
         [HttpDelete]
         [Route("{itemId}")]
+        [ItemExistActionFilter]
         public async Task<IActionResult> Delete(int itemId)
         {
             var item = await _itemService.Delete(itemId);
