@@ -1,4 +1,5 @@
 ﻿using FinalProject.ApiModels;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 namespace FinalProject.Controllers
 {
     [ApiController]
+    [EnableCors("DefaultPolicy")]
     [Route("[controller]")]
     public class AccountController : ControllerBase
     {
@@ -31,6 +33,17 @@ namespace FinalProject.Controllers
             _userManager = userManager;
             _logger = logger;
             _jwtOptions = jwtOptions.Value;
+        }
+
+        /// <summary>
+        /// Simple endpoint for testing CORS using http://test-cors.org
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult Cors()
+        {
+            return Ok("CORS");
         }
 
         /// <summary>

@@ -28,6 +28,13 @@ namespace FinalProject
 
             services.AddSecurityConfiguration(Configuration);
 
+            services.AddCors(o => o.AddPolicy("DefaultPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddControllers();
 
             services.AddSwaggerConfiguration();
@@ -57,6 +64,7 @@ namespace FinalProject
             }
 
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
@@ -70,6 +78,8 @@ namespace FinalProject
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
 

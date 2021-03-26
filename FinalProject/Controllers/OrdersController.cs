@@ -2,6 +2,7 @@
 using FinalProject.ApiModels;
 using FinalProject.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,9 +14,10 @@ using System.Threading.Tasks;
 
 namespace FinalProject.Controllers
 {
+    [Authorize]
+    [EnableCors("DefaultPolicy")]
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;

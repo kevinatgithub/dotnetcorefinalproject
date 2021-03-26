@@ -4,6 +4,12 @@
         <name>FinalProject</name>
     </assembly>
     <members>
+        <member name="M:FinalProject.Controllers.AccountController.Cors">
+            <summary>
+            Simple endpoint for testing CORS using http://test-cors.org
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:FinalProject.Controllers.AccountController.Register(FinalProject.ApiModels.RegisterModel)">
             <summary>
             Endpoint for New User Registration

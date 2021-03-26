@@ -2,6 +2,7 @@
 using FinalProject.ApiModels;
 using FinalProject.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Services;
@@ -10,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace FinalProject.Controllers
 {
+    [Authorize]
+    [EnableCors("DefaultPolicy")]
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
     public class ItemsController : ControllerBase
     {
         private readonly IItemService _itemService;
