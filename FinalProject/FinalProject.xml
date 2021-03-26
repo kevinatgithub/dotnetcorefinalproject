@@ -64,10 +64,10 @@
         </member>
         <member name="M:FinalProject.Controllers.ItemsController.Update(System.Int32,FinalProject.ApiModels.ItemModel)">
             <summary>
-            For updating an existing item
+            For updating an existing item, [ItemExistActionFilter]
             </summary>
             <param name="itemId">The ID of the item to be updated</param>
-            <param name="updateItemModel"></param>
+            <param name="updateItemModel">contains update for Item Name, Stocks, and Unit Price</param>
             <returns></returns>
             <response code="200">Item updated succesfully</response>
             <response code="400">Failed to update item</response>
@@ -76,7 +76,7 @@
         </member>
         <member name="M:FinalProject.Controllers.ItemsController.Delete(System.Int32)">
             <summary>
-            Delete an Item by ID
+            Delete an Item by ID, [ItemExistActionFilter]
             </summary>
             <param name="itemId">The ID of the Item to be deleted</param>
             <returns></returns>
@@ -111,9 +111,9 @@
         </member>
         <member name="M:FinalProject.Controllers.OrdersController.Create(FinalProject.ApiModels.CreateOrderModel)">
             <summary>
-            Endpoint for creating Order
+            Endpoint for creating Order, [ItemExistActionFilter], [ItemHasStocksActionFilter]
             </summary>
-            <param name="createOrderModel">Contains the Item ID and Quantity</param>
+            <param name="model">Contains the Item ID and Quantity</param>
             <returns></returns>
             <response code="200">Order creatd succefully</response>
             <response code="404">Item with the specified ID was not found!</response>
@@ -122,10 +122,10 @@
         </member>
         <member name="M:FinalProject.Controllers.OrdersController.Update(System.Int32,FinalProject.ApiModels.UpdateOrderModel)">
             <summary>
-            For updating an order record
+            For updating an order record, [ItemExistActionFilter], [ItemHasStocksActionFilter]
             </summary>
             <param name="orderId">The ID of the Order to be updated</param>
-            <param name="updateModel">contains new Item ID or new Quantity or new Status of the order</param>
+            <param name="model">contains new Item ID or new Quantity or new Status of the order</param>
             <returns></returns>
             <response code="200">Order was succefully updated</response>
             <response code="401">Request unauthorized</response>

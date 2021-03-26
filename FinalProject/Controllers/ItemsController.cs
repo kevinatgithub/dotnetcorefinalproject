@@ -88,9 +88,9 @@ namespace FinalProject.Controllers
         }
 
         /// <summary>
-        /// For updating an existing item
+        /// For updating an existing item, [ItemExistActionFilter]
         /// </summary>
-        /// <param name="itemId">The ID of the item to be updated, [ItemExistActionFilter]</param>
+        /// <param name="itemId">The ID of the item to be updated</param>
         /// <param name="updateItemModel">contains update for Item Name, Stocks, and Unit Price</param>
         /// <returns></returns>
         /// <response code="200">Item updated succesfully</response>
@@ -118,9 +118,9 @@ namespace FinalProject.Controllers
         }
 
         /// <summary>
-        /// Delete an Item by ID
+        /// Delete an Item by ID, [ItemExistActionFilter]
         /// </summary>
-        /// <param name="itemId">The ID of the Item to be deleted, [ItemExistActionFilter]</param>
+        /// <param name="itemId">The ID of the Item to be deleted</param>
         /// <returns></returns>
         /// <response code="200">Item have been deleted succefully</response>
         /// <response code="401">Request unauthorized</response>

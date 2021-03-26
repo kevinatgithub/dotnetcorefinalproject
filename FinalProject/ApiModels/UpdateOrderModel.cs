@@ -2,7 +2,7 @@
 
 namespace FinalProject.ApiModels
 {
-    public class UpdateOrderModel : IHasItemId
+    public class UpdateOrderModel : IHasItemId, IHasQuantity
     {
         public int ItemId { get; set; }
         public int Quantity { get; set; }

@@ -86,9 +86,9 @@ namespace FinalProject.Controllers
         }
 
         /// <summary>
-        /// Endpoint for creating Order
+        /// Endpoint for creating Order, [ItemExistActionFilter], [ItemHasStocksActionFilter]
         /// </summary>
-        /// <param name="createOrderModel">Contains the Item ID and Quantity, [ItemExistActionFilter]</param>
+        /// <param name="model">Contains the Item ID and Quantity</param>
         /// <returns></returns>
         /// <response code="200">Order creatd succefully</response>
         /// <response code="404">Item with the specified ID was not found!</response>
@@ -96,23 +96,24 @@ namespace FinalProject.Controllers
         /// <response code="401">Request unauthorized</response>
         [HttpPost]
         [ItemExistActionFilter]
-        public async Task<IActionResult> Create([FromBody] CreateOrderModel createOrderModel)
+        [ItemHasStocksActionFilter]
+        public async Task<IActionResult> Create([FromBody] CreateOrderModel model)
         {
-            var orderDTO = _mapper.Map<CreateOrderModel, OrderDTO>(createOrderModel);
+            var orderDTO = _mapper.Map<CreateOrderModel, OrderDTO>(model);
             var email = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Email);
             var user = await _userService.FindByNameAsync(email.Value);
             orderDTO.CreatedBy = Guid.Parse(user.Id).ToString();
-            _logger.LogInformation("Creating order with itemId = {itemId}, quantity = {quantity}", createOrderModel.ItemId, createOrderModel.Quantity);
+            _logger.LogInformation("Creating order with itemId = {itemId}, quantity = {quantity}", model.ItemId, model.Quantity);
             var record = await _orderService.Create(orderDTO);
             _logger.LogInformation("Order created succesfully with Order Id = {orderId}", record.Id);
             return Ok(record);
         }
 
         /// <summary>
-        /// For updating an order record
+        /// For updating an order record, [ItemExistActionFilter], [ItemHasStocksActionFilter]
         /// </summary>
-        /// <param name="orderId">The ID of the Order to be updated, [ItemExistActionFilter]</param>
-        /// <param name="updateModel">contains new Item ID or new Quantity or new Status of the order</param>
+        /// <param name="orderId">The ID of the Order to be updated</param>
+        /// <param name="model">contains new Item ID or new Quantity or new Status of the order</param>
         /// <returns></returns>
         /// <response code="200">Order was succefully updated</response>
         /// <response code="401">Request unauthorized</response>
@@ -120,10 +121,11 @@ namespace FinalProject.Controllers
         /// <response code="400">Invalid request payload</response>
         [HttpPut]
         [ItemExistActionFilter]
+        [ItemHasStocksActionFilter]
         [Route("{orderId}")]
-        public async Task<IActionResult> Update(int orderId, [FromBody] UpdateOrderModel updateModel)
+        public async Task<IActionResult> Update(int orderId, [FromBody] UpdateOrderModel model)
         {
-            _logger.LogInformation("Updating Order with ID = {i} applying changes itemId={itemId}, quantity={q}", orderId, updateModel.ItemId, updateModel.Quantity);
+            _logger.LogInformation("Updating Order with ID = {i} applying changes itemId={itemId}, quantity={q}", orderId, model.ItemId, model.Quantity);
             var item = await _orderService.Get(orderId);
             if (item == null)
             {
@@ -131,7 +133,7 @@ namespace FinalProject.Controllers
                 return NotFound("Order not found!");
             }
 
-            var orderDto = _mapper.Map<UpdateOrderModel, OrderDTO>(updateModel);
+            var orderDto = _mapper.Map<UpdateOrderModel, OrderDTO>(model);
             orderDto.Id = orderId;
             var record = await _orderService.Update(orderDto);
             if (record == null)
