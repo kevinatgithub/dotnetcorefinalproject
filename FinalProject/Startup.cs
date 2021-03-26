@@ -1,4 +1,6 @@
 using Autofac;
+using FinalProject.Middleware;
+using FinalProject.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -88,6 +90,8 @@ namespace FinalProject
                       new string[] { }
                     }
                   });
+
+                c.OperationFilter<AddRequiredHeaderParameter>();
             });
         }
 
@@ -120,6 +124,8 @@ namespace FinalProject
             });
 
             app.UseSerilogRequestLogging();
+
+            app.ApplyHeaderValidation();
 
             app.UseHttpsRedirection();
 
