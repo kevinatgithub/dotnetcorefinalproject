@@ -7,6 +7,7 @@ namespace Services
     public interface IItemService
     {
         Task<IList<ItemDTO>> GetAll();
+        Task<ItemDTO> GetItemByName(string name);
         Task<ItemDTO> Get(int id);
         Task<ItemDTO> Create(ItemDTO itemDto);
         Task<ItemDTO> Update(ItemDTO itemDto);

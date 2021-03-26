@@ -25,6 +25,12 @@ namespace FinalProject.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get all items from the database.
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Succeful request, returns the items from the database as a collection</response>
+        /// <response code="401">Request unauthorized</response>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -33,6 +39,14 @@ namespace FinalProject.Controllers
             return Ok(items);
         }
 
+        /// <summary>
+        /// Get an specific item using Item ID
+        /// </summary>
+        /// <param name="itemId">The Item's ID</param>
+        /// <returns></returns>
+        /// <response code="200">Item was found!</response>
+        /// <response code="401">Request unauthorized</response>
+        /// <response code="404">Item does not exist!</response>
         [HttpGet]
         [Route("{itemId}")]
         public async Task<IActionResult> Get(int itemId)
@@ -48,16 +62,40 @@ namespace FinalProject.Controllers
             return Ok(item);
         }
 
+        /// <summary>
+        /// For creating a new item record
+        /// </summary>
+        /// <param name="createItemModel">The Item details</param>
+        /// <returns></returns>
+        /// <response code="200">The request was succeful, returns the item created with the ID</response>
+        /// <response code="400">The request failed due to the item name already existing or invalid request payload.</response>
+        /// <response code="401">Request unauthorized</response>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ItemModel createItemModel)
         {
             var itemDto = _mapper.Map<ItemModel, ItemDTO>(createItemModel);
             _logger.LogInformation("Creating Item with name = {n}, stocks = {s}, unit price = {p}", itemDto.Name, itemDto.Stocks, itemDto.UnitPrice);
             var record = await _itemService.Create(itemDto);
+            if (record == null)
+            {
+                _logger.LogWarning("Failed to create item, item name already exist!");
+                return BadRequest("Failed to create item, item name already exist!");
+            }
+
             _logger.LogInformation("Item created succesfully with Item Id = {itemId}", record.Id);
             return Ok(record);
         }
 
+        /// <summary>
+        /// For updating an existing item
+        /// </summary>
+        /// <param name="itemId">The ID of the item to be updated</param>
+        /// <param name="updateItemModel"></param>
+        /// <returns></returns>
+        /// <response code="200">Item updated succesfully</response>
+        /// <response code="400">Failed to update item</response>
+        /// <response code="401">Request unauthorized</response>
+        /// <response code="404">Item with the provided ID does not exist</response>
         [HttpPut]
         [Route("{itemId}")]
         public async Task<IActionResult> Update(int itemId, [FromBody] ItemModel updateItemModel)
@@ -77,6 +115,13 @@ namespace FinalProject.Controllers
             return Ok(record);
         }
 
+        /// <summary>
+        /// Delete an Item by ID
+        /// </summary>
+        /// <param name="itemId">The ID of the Item to be deleted</param>
+        /// <returns></returns>
+        /// <response code="200">Item have been deleted succefully</response>
+        /// <response code="401">Request unauthorized</response>
         [HttpDelete]
         [Route("{itemId}")]
         public async Task<IActionResult> Delete(int itemId)

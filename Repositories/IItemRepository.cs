@@ -8,6 +8,8 @@ namespace Repositories
     {
         Task<IList<Item>> GetAll();
 
+        Task<Item> GetByName(string name);
+
         Task<Item> Get(int id);
 
         Task<Item> Save(Item item);

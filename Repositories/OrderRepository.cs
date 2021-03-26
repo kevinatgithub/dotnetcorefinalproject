@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Repositories.Data;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repositories
@@ -40,6 +40,11 @@ namespace Repositories
         public async Task<IList<Order>> GetAll()
         {
             return await _dbContext.Orders.ToListAsync();
+        }
+
+        public async Task<IList<Order>> GetAllForUser(string userId)
+        {
+            return await _dbContext.Orders.Where(o => o.CreatedBy.Equals(userId)).ToListAsync();
         }
 
         public async Task<Order> Save(Order order)

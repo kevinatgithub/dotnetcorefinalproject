@@ -42,6 +42,11 @@ namespace Repositories
             return await _dbContext.Items.ToListAsync();
         }
 
+        public async Task<Item> GetByName(string name)
+        {
+            return await _dbContext.Items.FirstOrDefaultAsync(i => i.Name.ToUpper().Equals(name.ToUpper()));
+        }
+
         public async Task<Item> Save(Item item)
         {
             if (item == null)

@@ -49,7 +49,6 @@ namespace Services
         {
             var order = _mapper.Map<OrderDTO, Order>(orderDTO);
             order.Id = null;
-            order.CreatedBy = "Admin"; // TODO : Change to Current Logged in User when authentication is configured
             order.CreatedOn = DateTime.UtcNow;
             order.TotalPrice = await CalculateTotalPrice(orderDTO);
             order.Status = OrderStatus.PLACED.ToString();
@@ -112,6 +111,13 @@ namespace Services
             }
 
             return updated;
+        }
+
+        public async Task<IList<OrderDTO>> GetAllForUser(string userId)
+        {
+            var orders = await _orderRepository.GetAllForUser(userId);
+
+            return _mapper.Map<IList<Order>, IList<OrderDTO>>(orders);
         }
     }
 }

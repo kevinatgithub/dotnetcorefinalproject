@@ -33,6 +33,15 @@ namespace FinalProject.Controllers
             _jwtOptions = jwtOptions.Value;
         }
 
+        /// <summary>
+        /// Endpoint for New User Registration
+        /// </summary>
+        /// <param name="registerDTO">Provide New User's email address, Password and Password Confirmation</param>
+        /// <returns>
+        /// The Generated Email Confirmation Token that will be used in /account/confirmEmail
+        /// </returns>
+        /// <response code="200">Return the generated email confirmation token to be used in /account/confirmEmail </response>
+        /// <response code="400">When request is invalid due to invalid email address, email address already taken, password not match or password requirements not met,</response>
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> Register([FromBody] RegisterModel registerDTO)
@@ -50,6 +59,14 @@ namespace FinalProject.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <summary>
+        /// For Confirming User's email address after registration
+        /// </summary>
+        /// <param name="confirmEmailDTO">Provide the User's email address and Confirmation Token</param>
+        /// <returns></returns>
+        /// <response code="200">The confirmation is successful</response>
+        /// <response code="400">Invalid confirmation token provided</response>
+        /// <response code="404">Unable to load user with the provided email address</response>
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel confirmEmailDTO)
@@ -75,6 +92,13 @@ namespace FinalProject.Controllers
             return BadRequest("Confirm Email Failed!");
         }
 
+        /// <summary>
+        /// Use this endpoint to generate JWT token
+        /// </summary>
+        /// <param name="loginDTO">Provide valid email and password</param>
+        /// <returns></returns>
+        /// <response code="200">Request is succesfull, returns generated JWT Token</response>
+        /// <response code="400">Request failed due to invalid credentials or unconfirmed email address provided.</response>
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> Login([FromBody] LoginModel loginDTO)

@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>a3e28af8-b43a-42aa-81c7-dcc6e1c5599a</UserSecretsId>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\KevinC\source\repos\FinalProject\FinalProject\FinalProject.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
