@@ -1,4 +1,4 @@
-﻿namespace FinalProject.ApiModels
+﻿namespace FinalProject.ApiModels.interfaces
 {
     interface IHasQuantity
     {

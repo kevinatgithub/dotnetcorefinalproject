@@ -1,4 +1,4 @@
-﻿using FinalProject.ApiModels;
+﻿using FinalProject.ApiModels.interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

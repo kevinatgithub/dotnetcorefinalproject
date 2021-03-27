@@ -47,13 +47,6 @@
             <param name="exception">Integer 1 to 3</param>
             <returns></returns>
         </member>
-        <member name="M:FinalProject.Controllers.HealthCheckController.TryExceptionAuth(System.Int32)">
-            <summary>
-            With Authorization, Throw test exception for logging
-            </summary>
-            <param name="exception">Integer 1 to 3</param>
-            <returns></returns>
-        </member>
         <member name="M:FinalProject.Controllers.HealthCheckController.Exceptions">
             <summary>
             Get All Logged Exceptions
