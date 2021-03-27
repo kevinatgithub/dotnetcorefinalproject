@@ -13,6 +13,7 @@ namespace Repositories.Data
 
         public DbSet<Item> Items { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<ApiException> ApiExceptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,6 +23,7 @@ namespace Repositories.Data
             // Add your customizations after calling base.OnModelCreating(builder);
             builder.Entity<Item>().ToTable("Items");
             builder.Entity<Order>().ToTable("Orders");
+            builder.Entity<ApiException>().ToTable("ApiExceptions");
         }
     }
 }

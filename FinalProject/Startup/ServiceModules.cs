@@ -15,6 +15,8 @@ namespace FinalProject
             builder.RegisterType<ItemService>().As<IItemService>();
             builder.RegisterType<OrderRepository>().As<IOrderRepository>();
             builder.RegisterType<OrderService>().As<IOrderService>();
+            builder.RegisterType<ApiExceptionRepository>().As<IApiExceptionRepository>();
+            builder.RegisterType<ApiExceptionService>().As<IApiExceptionService>();
         }
     }
 }

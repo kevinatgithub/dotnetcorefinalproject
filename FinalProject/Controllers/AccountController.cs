@@ -36,17 +36,6 @@ namespace FinalProject.Controllers
         }
 
         /// <summary>
-        /// Simple endpoint for testing CORS using http://test-cors.org
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("[action]")]
-        public IActionResult Cors()
-        {
-            return Ok("CORS");
-        }
-
-        /// <summary>
         /// Endpoint for New User Registration
         /// </summary>
         /// <param name="registerDTO">Provide New User's email address, Password and Password Confirmation</param>
@@ -114,7 +103,7 @@ namespace FinalProject.Controllers
         /// <response code="400">Request failed due to invalid credentials or unconfirmed email address provided.</response>
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Login([FromBody] LoginModel loginDTO)
+        public async Task<IActionResult> Token([FromBody] LoginModel loginDTO)
         {
             _logger.LogInformation("AccountController.Login called using email = {email}", loginDTO.Email);
             IActionResult actionResult;

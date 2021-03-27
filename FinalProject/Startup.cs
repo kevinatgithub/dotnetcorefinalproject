@@ -56,6 +56,8 @@ namespace FinalProject
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSerilogRequestLogging();
             }
             else
             {
@@ -71,9 +73,9 @@ namespace FinalProject
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseSerilogRequestLogging();
-
             app.ApplyHeaderValidation();
+
+            app.ApplyExceptionLogger();
 
             app.UseHttpsRedirection();
 

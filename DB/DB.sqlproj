@@ -60,5 +60,6 @@
   <ItemGroup>
     <Build Include="Items.sql" />
     <Build Include="Orders.sql" />
+    <Build Include="ApiExceptions.sql" />
   </ItemGroup>
 </Project>
