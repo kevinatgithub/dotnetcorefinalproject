@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace FinalProject.Middleware
@@ -22,13 +23,15 @@ namespace FinalProject.Middleware
     public class HeaderValidation
     {
         private readonly RequestDelegate _next;
+        private readonly IConfiguration _configuration;
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="next"><see cref="RequestDelegate"/> automatically passed by the pipeline.</param>
-        public HeaderValidation(RequestDelegate next)
+        public HeaderValidation(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -51,6 +54,29 @@ namespace FinalProject.Middleware
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("x-api-key header is missing.");
                 return;
+            }
+
+            context.Request.Headers.TryGetValue("x-api-version", out var xApiVersion);
+            context.Request.Headers.TryGetValue("x-api-key", out var xApiKey);
+
+            if (xApiVersion.ToString() != null)
+            {
+               if (xApiVersion != _configuration["X-API-VERSION"].ToString())
+                {
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsync("Incorrect x-api-version value.");
+                    return;
+                }
+            }
+
+            if (xApiKey.ToString() != null)
+            {
+                if (xApiKey != _configuration["X-API-KEY"].ToString())
+                {
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsync("Incorrect x-api-key value.");
+                    return;
+                }
             }
 
             await _next.Invoke(context);
