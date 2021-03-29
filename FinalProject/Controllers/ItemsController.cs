@@ -39,7 +39,10 @@ namespace FinalProject.Controllers
         public async Task<IActionResult> GetAll()
         {
             var items = await _itemService.GetAll();
-            _logger.LogInformation("GetAll returned {n} result",items.Count);
+            if (items.Count > 0)
+            {
+                _logger.LogInformation("GetAll returned {n} result", items.Count);
+            }
             return Ok(items);
         }
 

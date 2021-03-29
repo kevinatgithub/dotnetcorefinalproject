@@ -2,13 +2,16 @@
 using FinalProject;
 using FinalProject.Controllers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Services;
+using Services.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -54,14 +57,35 @@ namespace Tests
             Assert.Throws<ArgumentNullException>(() => new ItemsController(_itemServiceMock.Object, _mapperMock.Object, null));
         }
 
+        [Fact]
+        public void ItemsController_GetAll_Success()
+        {
+            _itemServiceMock.Setup(_ => _.GetAll()).Returns(Task.FromResult(createMockItems()));
+
+            var result = (OkObjectResult)_subject.GetAll().Result;
+            Assert.True(result.StatusCode == (int)HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public void ItemsController_GetAll_NullItems_Success()
+        {
+            _itemServiceMock.Setup(_ => _.GetAll()).Returns(Task.FromResult(createMockNullItems()));
+
+            var result = (OkObjectResult)_subject.GetAll().Result;
+            Assert.True(result.StatusCode == (int)HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public void ItemsController_Get_Success()
+        {
+            _itemServiceMock.Setup(_ => _.Get(1)).Returns(Task.FromResult(createMockItem()));
+
+            var result = (OkObjectResult)_subject.Get(1).Result;
+            var itemDTO = (ItemDTO)result.Value;
+            Assert.True(itemDTO.Name == "Sardines");
+        }
+
         #endregion
-
-
-
-
-
-
-
 
         private ItemsController CreateSubject()
         {
@@ -69,6 +93,26 @@ namespace Tests
             return service;
         }
 
+        public IList<ItemDTO> createMockItems()
+        {
+            return new List<ItemDTO>()
+            {
+                new ItemDTO { Id = 1, Name = "Sardines", Stocks =  5, UnitPrice = 30.0m },
+                new ItemDTO { Id = 2, Name = "Lucky Me", Stocks =  4, UnitPrice = 14m }
+            };
+        }
+
+        public IList<ItemDTO> createMockNullItems()
+        {
+            return new List<ItemDTO>()
+            {
+            };
+        }
+
+        public ItemDTO createMockItem()
+        {
+            return new ItemDTO { Id = 1, Name = "Sardines", Stocks = 5, UnitPrice = 30.0m };
+        }
     }
 
 }
