@@ -2,7 +2,9 @@
 using Moq;
 using Repositories;
 using Services;
+using Services.DTO;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Tests
@@ -41,7 +43,6 @@ namespace Tests
         [Fact]
         public void Can_Create_Item()
         {
-
         }
 
         [Fact]
@@ -65,6 +66,15 @@ namespace Tests
         {
             var service = new ItemService(_itemRepositoryMock.Object, _mapperMock.Object);
             return service;
+        }
+
+        public IList<ItemDTO> createMockGetAllItems()
+        {
+            return new List<ItemDTO>()
+            {
+                new ItemDTO { Id = 1, Name = "Sardines", Stocks =  5, UnitPrice = 30.0m },
+                new ItemDTO { Id = 2, Name = "Lucky Me", Stocks =  4, UnitPrice = 14m }
+            };
         }
 
     }
