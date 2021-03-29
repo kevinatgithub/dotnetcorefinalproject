@@ -27,10 +27,10 @@ namespace FinalProject.Controllers
 
         public OrdersController(IOrderService orderService, UserManager<IdentityUser> userService, IMapper mapper, ILogger<OrdersController> logger)
         {
-            _orderService = orderService;
-            _userService = userService;
-            _mapper = mapper;
-            _logger = logger;
+            _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
