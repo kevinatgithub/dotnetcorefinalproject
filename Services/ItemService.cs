@@ -2,6 +2,7 @@
 using DomainModels;
 using Repositories;
 using Services.DTO;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,8 +15,8 @@ namespace Services
 
         public ItemService(IItemRepository itemRepository, IMapper mapper)
         {
-            _itemRepository = itemRepository;
-            _mapper = mapper;
+            _itemRepository = itemRepository ?? throw new ArgumentNullException(nameof(itemRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<ItemDTO> Create(ItemDTO itemDto)

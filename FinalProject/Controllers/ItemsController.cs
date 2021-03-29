@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Services;
 using Services.DTO;
+using System;
 using System.Threading.Tasks;
 
 namespace FinalProject.Controllers
@@ -23,9 +24,9 @@ namespace FinalProject.Controllers
 
         public ItemsController(IItemService itemService, IMapper mapper, ILogger<ItemsController> logger)
         {
-            _itemService = itemService;
-            _mapper = mapper;
-            _logger = logger;
+            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
