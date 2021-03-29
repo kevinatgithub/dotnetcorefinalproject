@@ -18,10 +18,10 @@ namespace Services
 
         public OrderService(IOrderRepository orderRepository, IItemRepository itemRepository, IMapper mapper, ILogger<OrderService> logger)
         {
-            _orderRepository = orderRepository;
-            _itemRepository = itemRepository;
-            _mapper = mapper;
-            _logger = logger;
+            _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            _itemRepository = itemRepository ?? throw new ArgumentNullException(nameof(itemRepository)); ;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); ;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
         }
 
         public async Task<decimal> CalculateTotalPrice(OrderDTO orderDTO)
