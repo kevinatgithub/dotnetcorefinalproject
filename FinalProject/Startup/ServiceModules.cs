@@ -17,6 +17,7 @@ namespace FinalProject
             builder.RegisterType<OrderService>().As<IOrderService>();
             builder.RegisterType<ApiExceptionRepository>().As<IApiExceptionRepository>();
             builder.RegisterType<ApiExceptionService>().As<IApiExceptionService>();
+            builder.RegisterType<SimpleNoAttachmentEmailSender>().As<IEmailSender>();
         }
     }
 }

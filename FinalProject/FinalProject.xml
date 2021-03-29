@@ -15,7 +15,7 @@
             <response code="200">Return the generated email confirmation token to be used in /account/confirmEmail </response>
             <response code="400">When request is invalid due to invalid email address, email address already taken, password not match or password requirements not met,</response>
         </member>
-        <member name="M:FinalProject.Controllers.AccountController.ConfirmEmail(FinalProject.ApiModels.ConfirmEmailModel)">
+        <member name="M:FinalProject.Controllers.AccountController.ConfirmEmail(System.String,System.String)">
             <summary>
             For Confirming User's email address after registration
             </summary>
@@ -51,6 +51,13 @@
             <summary>
             Get All Logged Exceptions
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FinalProject.Controllers.HealthCheckController.SendTestEmail(System.String)">
+            <summary>
+            Test Email Sender
+            </summary>
+            <param name="email"></param>
             <returns></returns>
         </member>
         <member name="M:FinalProject.Controllers.ItemsController.GetAll">
@@ -169,7 +176,7 @@
             Middleware class to implement header validation.
             </summary>
         </member>
-        <member name="M:FinalProject.Middleware.HeaderValidation.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+        <member name="M:FinalProject.Middleware.HeaderValidation.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Constructor.
             </summary>

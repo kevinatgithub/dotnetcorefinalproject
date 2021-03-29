@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Services;
+using Services.DTO;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,18 +23,24 @@ namespace FinalProject.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<AccountController> _logger;
+        private readonly IEmailSender _emailSender;
         private readonly JwtOptions _jwtOptions;
+        private readonly SmtpConfig _smtpConfig;
 
         public AccountController(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             IOptions<JwtOptions> jwtOptions,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            IEmailSender emailSender,
+            IOptions<SmtpConfig> options)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _emailSender = emailSender;
             _jwtOptions = jwtOptions.Value;
+            _smtpConfig = options.Value;
         }
 
         /// <summary>
@@ -55,21 +63,25 @@ namespace FinalProject.Controllers
             {
                 _logger.LogInformation("AccountController.Register succesfully added user with email = {email}", registerDTO.Email);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                SendEmailConfirmationCode(registerDTO.Email, code);
                 return Ok(code.ToString());
             }
             _logger.LogWarning("AccountController.Register failed to register user with email = {email}", registerDTO.Email);
             return BadRequest(result.Errors);
         }
 
-        /// <summary>
-        /// For Confirming User's email address after registration
-        /// </summary>
-        /// <param name="confirmEmailDTO">Provide the User's email address and Confirmation Token</param>
-        /// <returns></returns>
-        /// <response code="200">The confirmation is successful</response>
-        /// <response code="400">Invalid confirmation token provided</response>
-        /// <response code="404">Unable to load user with the provided email address</response>
-        [HttpPost]
+        private void SendEmailConfirmationCode(string email, string code)
+        {
+            var message = new EmailMessage()
+            {
+                To = email,
+                Subject = "Confirm Email",
+                Body = $"<a href='{_smtpConfig.ConfirmEmailBaseUrl}account/confirmEmail/{email}/{code}'>Click here to confirm email.</a>"
+            };
+            _emailSender.Send(message);
+        }
+
+        /*[HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel confirmEmailDTO)
         {
@@ -90,6 +102,38 @@ namespace FinalProject.Controllers
             }
 
             _logger.LogWarning("AccountController.ConfirmEmail failed to confirm email, bad request, with email = {email}", confirmEmailDTO.Email);
+
+            return BadRequest("Confirm Email Failed!");
+        }*/
+
+        /// <summary>
+        /// For Confirming User's email address after registration
+        /// </summary>
+        /// <param name="confirmEmailDTO">Provide the User's email address and Confirmation Token</param>
+        /// <returns></returns>
+        /// <response code="200">The confirmation is successful</response>
+        /// <response code="400">Invalid confirmation token provided</response>
+        /// <response code="404">Unable to load user with the provided email address</response>
+        [HttpGet]
+        [Route("[action]/{email}/{code}")]
+        public async Task<IActionResult> ConfirmEmail(string email, string code)
+        {
+            _logger.LogInformation("AccountController.ConfirmEmail failed to register user with email = {email}", email);
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogWarning("AccountController.ConfirmEmail Unable to load user with email = {email}", email);
+                return NotFound($"Unable to load user with Email '{email}'.");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("AccountController.ConfirmEmail succesfully registered user with email = {email}", email);
+                return Ok("Success!");
+            }
+
+            _logger.LogWarning("AccountController.ConfirmEmail failed to confirm email, bad request, with email = {email}", email);
 
             return BadRequest("Confirm Email Failed!");
         }

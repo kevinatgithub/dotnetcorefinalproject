@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Repositories.Data;
 using Serilog;
+using Services;
 
 namespace FinalProject
 {
@@ -40,6 +41,8 @@ namespace FinalProject
             services.AddSwaggerConfiguration();
 
             services.AddHttpContextAccessor();
+
+            services.Configure<SmtpConfig>(options => Configuration.GetSection("Smtp").Bind(options));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

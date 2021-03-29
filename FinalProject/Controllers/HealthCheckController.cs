@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Services;
+using Services.DTO;
 using System.Threading.Tasks;
 
 namespace FinalProject.Controllers
@@ -15,11 +16,13 @@ namespace FinalProject.Controllers
     {
         private readonly IApiExceptionService _apiExceptionService;
         private readonly ILogger<HealthCheckController> _logger;
+        private readonly IEmailSender _emailSender;
 
-        public HealthCheckController(IApiExceptionService apiExceptionService, ILogger<HealthCheckController> logger)
+        public HealthCheckController(IApiExceptionService apiExceptionService, ILogger<HealthCheckController> logger, IEmailSender emailSender)
         {
             _apiExceptionService = apiExceptionService;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         /// <summary>
@@ -60,6 +63,26 @@ namespace FinalProject.Controllers
             var exceptions = await _apiExceptionService.GetAll();
             _logger.LogInformation("HealthCheckController.Exceptions return {e} result", exceptions.Count);
             return Ok(exceptions);
+        }
+
+        /// <summary>
+        /// Test Email Sender
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]/{email}")]
+        public IActionResult SendTestEmail(string email)
+        {
+            _logger.LogInformation("Sending email to {email}..", email);
+            _emailSender.Send(new EmailMessage()
+            {
+                To = email,
+                Body = "Test Email",
+                Subject = "Test Email"
+            });
+            _logger.LogInformation("Email sent");
+            return Ok();
         }
     }
 }
