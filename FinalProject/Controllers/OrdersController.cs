@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using DomainModels;
 using FinalProject.ApiModels;
 using FinalProject.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,13 +25,20 @@ namespace FinalProject.Controllers
         private readonly IOrderService _orderService;
         private readonly UserManager<IdentityUser> _userService;
         private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authService;
         private readonly ILogger<OrdersController> _logger;
 
-        public OrdersController(IOrderService orderService, UserManager<IdentityUser> userService, IMapper mapper, ILogger<OrdersController> logger)
+        public OrdersController(
+            IOrderService orderService, 
+            UserManager<IdentityUser> userService, 
+            IMapper mapper,
+            IAuthorizationService authService,
+            ILogger<OrdersController> logger)
         {
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -121,6 +130,7 @@ namespace FinalProject.Controllers
         /// <response code="401">Request unauthorized</response>
         /// <response code="404">Item with the specified ID was not found!</response>
         /// <response code="400">Invalid request payload</response>
+        /// <response code="403">Access denied, due to order does not belong to user.</response>
         [HttpPut]
         [ItemExistActionFilter]
         [ItemHasStocksActionFilter]
@@ -133,6 +143,17 @@ namespace FinalProject.Controllers
             {
                 _logger.LogWarning("Update Order failed!, Order with ID = {id} not found!", orderId);
                 return NotFound("Order not found!");
+            }
+
+            var authResult = await _authService.AuthorizeAsync(User, new Order { CreatedBy = item.CreatedBy }, "CanModifyOrders");
+            if (!authResult.Succeeded)
+            {
+                _logger.LogWarning("Update Order failed!, order with Order ID = {orderId} does not belong to User with ID = {userId}", orderId, User.FindFirst(ClaimTypes.NameIdentifier));
+                return new ContentResult()
+                {
+                    StatusCode = StatusCodes.Status403Forbidden,
+                    Content = "Order does not belong to user!"
+                };
             }
 
             var orderDto = _mapper.Map<UpdateOrderModel, OrderDTO>(model);
@@ -151,10 +172,30 @@ namespace FinalProject.Controllers
         /// <param name="orderId">The ID of the order to be deleted</param>
         /// <returns></returns>
         /// <response code="200">Order has been deleted succefully</response>
+        /// <response code="403">Access denied, due to order does not belong to user.</response>
         [HttpDelete]
         [Route("{orderId}")]
         public async Task<IActionResult> Delete(int orderId)
         {
+            _logger.LogInformation("Deleting Order with ID = {i}", orderId);
+            var item = await _orderService.Get(orderId);
+            if (item == null)
+            {
+                _logger.LogWarning("Delete Order failed!, Order with ID = {id} not found!", orderId);
+                return NotFound("Order not found!");
+            }
+
+            var authResult = await _authService.AuthorizeAsync(User, new Order { CreatedBy = item.CreatedBy }, "CanModifyOrders");
+            if (!authResult.Succeeded)
+            {
+                _logger.LogWarning("Delete Order failed!, order with Order ID = {orderId} does not belong to User with ID = {userId}", orderId, User.FindFirst(ClaimTypes.NameIdentifier));
+                return new ContentResult()
+                {
+                    StatusCode = StatusCodes.Status403Forbidden,
+                    Content = "Order does not belong to user!"
+                };
+            }
+
             var order = await _orderService.Delete(orderId);
             _logger.LogInformation("Order with Id = {id} has been deleted!", orderId);
             return Ok(order);

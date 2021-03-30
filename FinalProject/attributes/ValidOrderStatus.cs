@@ -3,7 +3,7 @@ using FinalProject.ApiModels.interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FinalProject.attributes
+namespace FinalProject.Attributes
 {
     public class ValidOrderStatus : ValidationAttribute
     {
@@ -14,7 +14,7 @@ namespace FinalProject.attributes
             if (!Enum.IsDefined(typeof(OrderStatus), model.Status))
                 return new ValidationResult("Order Status should either be 'PLACED', 'COMPLETED', or 'CANCELED'");
 
-            return base.IsValid(value, validationContext);
+            return ValidationResult.Success;
         }
     }
 }

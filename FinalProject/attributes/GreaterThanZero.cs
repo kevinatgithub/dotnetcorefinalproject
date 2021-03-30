@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FinalProject.attributes
+namespace FinalProject.Attributes
 {
     public class GreaterThanZero : ValidationAttribute
     {
@@ -10,7 +10,7 @@ namespace FinalProject.attributes
             if (quantity <= 0)
                 return new ValidationResult($"{validationContext.MemberName} value should be greater than zero (0)");
 
-            return base.IsValid(value, validationContext);
+            return ValidationResult.Success;
         }
     }
 }

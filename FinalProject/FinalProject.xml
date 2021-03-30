@@ -19,7 +19,7 @@
             <summary>
             For Confirming User's email address after registration
             </summary>
-            <param name="confirmEmailDTO">Provide the User's email address and Confirmation Token</param>
+            <param name="confirmEmailDTO">Provide the User's email address and Returns Confirmation Token</param>
             <returns></returns>
             <response code="200">The confirmation is successful</response>
             <response code="400">Invalid confirmation token provided</response>
@@ -157,6 +157,7 @@
             <response code="401">Request unauthorized</response>
             <response code="404">Item with the specified ID was not found!</response>
             <response code="400">Invalid request payload</response>
+            <response code="403">Access denied, due to order does not belong to user.</response>
         </member>
         <member name="M:FinalProject.Controllers.OrdersController.Delete(System.Int32)">
             <summary>
@@ -165,6 +166,7 @@
             <param name="orderId">The ID of the order to be deleted</param>
             <returns></returns>
             <response code="200">Order has been deleted succefully</response>
+            <response code="403">Access denied, due to order does not belong to user.</response>
         </member>
         <member name="T:FinalProject.Middleware.HeaderValidationExtension">
             <summary>

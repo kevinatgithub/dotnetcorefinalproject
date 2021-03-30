@@ -1,5 +1,7 @@
-﻿using FinalProject.Swagger;
+﻿using FinalProject.Authorization;
+using FinalProject.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,10 +43,10 @@ namespace FinalProject
 
             services.AddAuthorization(options =>
             {
-                //options.AddPolicy("CanEditItems", policy => policy.Requirements.Add(new IsItemOwnerRequirement()));
+                options.AddPolicy("CanModifyOrders", policy => policy.Requirements.Add(new OrderBelongToUserRequirement()));
             });
 
-            //services.AddScoped<IAuthorizationHandler, IsItemOwnerHandler>();
+            services.AddScoped<IAuthorizationHandler, OrderBelongToUserHandler>();
         }
 
         public static void AddSwaggerConfiguration(this IServiceCollection services)

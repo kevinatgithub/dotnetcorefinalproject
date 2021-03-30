@@ -1,5 +1,5 @@
 ﻿using FinalProject.ApiModels.interfaces;
-using FinalProject.attributes;
+using FinalProject.Attributes;
 
 namespace FinalProject.ApiModels
 {

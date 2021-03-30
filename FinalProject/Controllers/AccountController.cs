@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace FinalProject.Controllers
 {
@@ -72,11 +73,12 @@ namespace FinalProject.Controllers
 
         private void SendEmailConfirmationCode(string email, string code)
         {
+            var encoded = code.Replace('+', '-').Replace('/', '_');
             var message = new EmailMessage()
             {
                 To = email,
                 Subject = "Confirm Email",
-                Body = $"<a href='{_smtpConfig.ConfirmEmailBaseUrl}account/confirmEmail/{email}/{code}'>Click here to confirm email.</a>"
+                Body = $"<a href='{_smtpConfig.ConfirmEmailBaseUrl}account/confirmEmail/{email}/{encoded}'>Click here to confirm email.</a>"
             };
             _emailSender.Send(message);
         }
@@ -109,7 +111,7 @@ namespace FinalProject.Controllers
         /// <summary>
         /// For Confirming User's email address after registration
         /// </summary>
-        /// <param name="confirmEmailDTO">Provide the User's email address and Confirmation Token</param>
+        /// <param name="confirmEmailDTO">Provide the User's email address and Returns Confirmation Token</param>
         /// <returns></returns>
         /// <response code="200">The confirmation is successful</response>
         /// <response code="400">Invalid confirmation token provided</response>
@@ -118,6 +120,7 @@ namespace FinalProject.Controllers
         [Route("[action]/{email}/{code}")]
         public async Task<IActionResult> ConfirmEmail(string email, string code)
         {
+            var urlDecodedCode = code.Replace('_', '/').Replace('-', '+');
             _logger.LogInformation("AccountController.ConfirmEmail failed to register user with email = {email}", email);
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -126,7 +129,7 @@ namespace FinalProject.Controllers
                 return NotFound($"Unable to load user with Email '{email}'.");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var result = await _userManager.ConfirmEmailAsync(user, urlDecodedCode);
             if (result.Succeeded)
             {
                 _logger.LogInformation("AccountController.ConfirmEmail succesfully registered user with email = {email}", email);
