@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinalProject.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,6 +17,7 @@ namespace Tests
         private Mock<IUserStore<IdentityUser>>  _userStoreMock;
         private Mock<UserManager<IdentityUser>> _userManagerMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<IAuthorizationService> _authServiceMock;
         private Mock<ILogger<OrdersController>> _loggerMock;
         private OrdersController _subject;
         public OrdersControllerTest()
@@ -42,24 +44,24 @@ namespace Tests
         [Fact]
         public void Instantiation_failed_item_service_null()
         {
-            Assert.Throws<ArgumentNullException>(() => new OrdersController(null, _userManagerMock.Object, _mapperMock.Object, _loggerMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new OrdersController(null, _userManagerMock.Object, _mapperMock.Object, _authServiceMock.Object, _loggerMock.Object));
         }
         [Fact]
         public void Instantiation_failed_userManager_null()
         {
-            Assert.Throws<ArgumentNullException>(() => new OrdersController(_orderServiceMock.Object, null, _mapperMock.Object, _loggerMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new OrdersController(_orderServiceMock.Object, null, _mapperMock.Object, _authServiceMock.Object, _loggerMock.Object));
         }
 
         [Fact]
         public void Instantiation_failed_mapper_null()
         {
-            Assert.Throws<ArgumentNullException>(() => new OrdersController(_orderServiceMock.Object, _userManagerMock.Object, null, _loggerMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new OrdersController(_orderServiceMock.Object, _userManagerMock.Object, null, _authServiceMock.Object, _loggerMock.Object));
         }
 
         [Fact]
         public void Instantiation_failed_logger_null()
         {
-            Assert.Throws<ArgumentNullException>(() => new OrdersController(_orderServiceMock.Object, _userManagerMock.Object, _mapperMock.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new OrdersController(_orderServiceMock.Object, _userManagerMock.Object, _mapperMock.Object, _authServiceMock.Object, null));
         }
 
         #endregion
@@ -73,7 +75,7 @@ namespace Tests
 
         private OrdersController CreateSubject()
         {
-            var service = new OrdersController(_orderServiceMock.Object, _userManagerMock.Object, _mapperMock.Object, _loggerMock.Object);
+            var service = new OrdersController(_orderServiceMock.Object, _userManagerMock.Object, _mapperMock.Object, _authServiceMock.Object, _loggerMock.Object);
             return service;
         }
 
