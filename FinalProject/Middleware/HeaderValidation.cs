@@ -12,7 +12,10 @@ namespace FinalProject.Middleware
     {
         public static IApplicationBuilder ApplyHeaderValidation(this IApplicationBuilder app)
         {
-            app.UseWhen(httpContext => !httpContext.Request.Path.StartsWithSegments("/account/confirmEmail"), subApp => subApp.UseMiddleware<HeaderValidation>());
+            app.UseWhen(httpContext => 
+                !httpContext.Request.Path.StartsWithSegments("/account/confirmEmail") &&
+                !httpContext.Request.Path.StartsWithSegments("/healthcheck/cors")
+                , subApp => subApp.UseMiddleware<HeaderValidation>());
             return app;
         }
     }
